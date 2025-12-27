@@ -1,21 +1,30 @@
 import Lottie from "lottie-react";
 import React, { use } from "react";
-import registerLottie from "../../../assets/lotties/register.json";
+import signInLottie from "../../../assets/lotties/signInLottie.json";
 import { AuthContext } from "../../../contexts/AuthContext/AuthContext";
 import SocialLogin from "../../Shared/SocialLogin";
+import { useLocation, useNavigate } from "react-router";
 
-const Register = () => {
-  const { createUser } = use(AuthContext);
-  const handleRegister = (e) => {
+const SignIn = () => {
+  const { logInUser } = use(AuthContext);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state || "/";
+
+  console.log("location in sign in page", location);
+
+  const handleSignIn = (e) => {
     e.preventDefault();
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
     console.log(email, password);
     // create user
-    createUser(email, password)
+    logInUser(email, password)
       .then((result) => {
         console.log(result.user);
+        navigate(from);
         form.reset();
       })
       .then((error) => {
@@ -28,13 +37,13 @@ const Register = () => {
         <div className="text-center lg:text-left ml-10">
           <Lottie
             style={{ width: "250px" }}
-            animationData={registerLottie}
+            animationData={signInLottie}
           ></Lottie>
         </div>
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <div className="card-body">
-            <h1 className="text-2xl font-bold text-center">Please Register</h1>
-            <form onSubmit={handleRegister}>
+            <h1 className="text-2xl font-bold text-center">Signin Now</h1>
+            <form onSubmit={handleSignIn}>
               <fieldset className="fieldset">
                 <label className="label">Email</label>
                 <input
@@ -50,10 +59,10 @@ const Register = () => {
                   className="input"
                   placeholder="Password"
                 />
-                <button className="btn btn-neutral mt-4">Register</button>
+                <button className="btn btn-neutral mt-4">Sign In</button>
               </fieldset>
             </form>
-            <SocialLogin></SocialLogin>
+            <SocialLogin from={from}></SocialLogin>
           </div>
         </div>
       </div>
@@ -61,4 +70,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default SignIn;
